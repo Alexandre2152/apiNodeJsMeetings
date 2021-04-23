@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 require('./models/Meetings')
 const Meetings = mongoose.model('meetings')
@@ -7,6 +8,13 @@ const Meetings = mongoose.model('meetings')
 const app = express();
 
 app.use(express.json())
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+    res.header("Access-Control-Allow-Headers", "*")
+    next()
+})
 
 mongoose.connect('mongodb://localhost/meetings', {
     useNewUrlParser: true,
@@ -18,7 +26,7 @@ mongoose.connect('mongodb://localhost/meetings', {
 })
 
 //Listar todos do bd
-app.get("/", (req, res) => {
+app.get("/meetings", (req, res) => {
     Meetings.find({}).then((meetings) => {
         return res.json(meetings)
     }).catch((err) => {
